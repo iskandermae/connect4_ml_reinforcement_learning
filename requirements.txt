@@ -1,0 +1,5 @@
+pip==23.1.2
+setuptools==65.5.0
+stable-baselines3[extra]>=2.0.0a4
+gym=0.26.2
+kaggle_environments
