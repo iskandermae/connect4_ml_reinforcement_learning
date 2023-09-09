@@ -4,22 +4,21 @@ import torch.nn as nn
 import gymnasium as gym
 
 # Neural network for predicting action values
-class CustomCNN(BaseFeaturesExtractor):
+class BigCustomCNN(BaseFeaturesExtractor):
     
-    def __init__(self, observation_space: gym.spaces.Box, features_dim: int=64):
-        super(CustomCNN, self).__init__(observation_space, features_dim)
+    def __init__(self, observation_space: gym.spaces.Box, features_dim: int=128):
+        super(BigCustomCNN, self).__init__(observation_space, features_dim)
         # CxHxW images (channels first)
         n_input_channels = observation_space.shape[0]
         self.cnn = nn.Sequential(
-            nn.Conv2d(n_input_channels, 64, kernel_size=4, stride=1, padding=0),
-            nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=2, stride=1, padding=0),
-            nn.ReLU(),
-            nn.Conv2d(64, 64, kernel_size=2, stride=1, padding=0),
-            nn.ReLU(),
+            nn.Conv2d(n_input_channels, 32, kernel_size=2, stride=1, padding=0),
+            nn.Mish(),
+            nn.Conv2d(32, 256, kernel_size=3, stride=1, padding=0),
+            nn.Mish(),
+            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=0),
+            nn.Mish(),
             nn.Flatten(),
         )
-
         # Compute shape by doing one forward pass
         with th.no_grad():
             n_flatten = self.cnn(

@@ -3,11 +3,13 @@ from stable_baselines3 import PPO
 
 #from ConnectFourGymEnv import ConnectFourGymEnv
 from MyEnvironmentGymConnect4 import MyEnvironmentGymConnect4
-from kaggle_environments import make, evaluate
+from kaggle_environments import make
 import numpy as np
+import os
 
+policyName = "CnnPolicy"
     
-def learn(neural_net, policyName, agents2):
+def create_model(neural_net, policyName, agents2, logdir):
     # Create ConnectFour environment 
     env_train = MyEnvironmentGymConnect4(agents2)
 
@@ -16,10 +18,7 @@ def learn(neural_net, policyName, agents2):
     )
 
     # Initialize agent
-    model = PPO(policyName, env_train, policy_kwargs=policy_kwargs, verbose=0)
-
-    # Train agent
-    model.learn(total_timesteps=5)
+    model = PPO(policyName, env_train, policy_kwargs=policy_kwargs, verbose=1, tensorboard_log=logdir)
 
     return model
 
@@ -55,3 +54,15 @@ def play3times(agent1, env_train, agent2 = "random"):
     print([agent2, agent1],env.state[0].reward,env.state[0].status,env.state[1].reward,env.state[1].status)
     print(np.array(env.state[0].observation['board']).reshape(1,6,7))
 
+from stable_baselines3.common.evaluation import evaluate_policy
+def print_evaluation(model):
+    N = 20
+    print(f"start evaluation {N}")
+    mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=N)
+    print(f"mean_reward={mean_reward:.2f} +/- {std_reward}")
+
+def get_tensorboard_logdir():
+    logdir = "logs"
+    if not os.path.exists(logdir):
+        os.makedirs(logdir)
+    return logdir

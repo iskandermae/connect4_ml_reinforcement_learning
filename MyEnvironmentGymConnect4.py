@@ -26,7 +26,7 @@ class MyEnvironmentGymConnect4(gym.Env):
         super().reset(seed=seed)
         agent2 = random.choice(self.agents2)
         agents_in_random_order = ([None, agent2], [agent2, None])[random.randint(0,1) == 0]
-        print('agents_in_random_order:', agents_in_random_order)                                           #todo: disable debug message
+        #print('agents_in_random_order:', agents_in_random_order)                                           #todo: disable debug message
         self.env =  self.ks_env.train(agents_in_random_order)
         self.obs = self.env.reset()
         info = {}
@@ -49,7 +49,7 @@ class MyEnvironmentGymConnect4(gym.Env):
         else: # End the game and penalize agent
             reward, done, info = -10, True, {}
         truncated = False  # we do not limit the number of steps here
-        if done:
+        if done and reward<-1:
             print("Done. Reward: ", reward)
         return np.array(self.obs['board']).reshape(1,self.rows,self.columns), reward, done, truncated, info
     def render(self):

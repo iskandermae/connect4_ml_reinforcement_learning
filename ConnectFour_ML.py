@@ -14,7 +14,7 @@ from UtilsModule import play3times, learn, play_and_draw
 model = PPO.load("ppo_v1")
 play_and_draw(model, agents2=["random"])
 
-
+exit()
 
 policyName = "CnnPolicy"
 
